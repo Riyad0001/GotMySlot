@@ -21,27 +21,31 @@ class SingletonModel(models.Model):
 
 class SiteSettings(SingletonModel):
     """Global site settings — editable from admin."""
-    site_name = models.CharField(max_length=100, default="SlotBooker")
-    site_tagline = models.CharField(max_length=200, default="Your Trusted Visa Partner")
+    agency_name = models.CharField(max_length=120, default="Nasir Travel & Consultancy")
+    site_name = models.CharField(max_length=100, default="Nasir Travel & Consultancy")
+    site_tagline = models.CharField(max_length=200, default="Your Journey | Our Priority")
     logo = models.ImageField(upload_to="site/", blank=True, null=True)
     favicon = models.ImageField(upload_to="site/", blank=True, null=True)
 
     # Contact
-    phone = models.CharField(max_length=30, default="+880 1XXXXXXXXX")
-    email = models.EmailField(default="info@example.com")
-    whatsapp_number = models.CharField(max_length=30, default="+8801XXXXXXXXX",
+    phone = models.CharField(max_length=30, default="+8801762364249")
+    secondary_phone = models.CharField(max_length=30, default="+8801620-855800", blank=True)
+    email = models.EmailField(default="travelnasir91@gmail.com")
+    whatsapp_number = models.CharField(max_length=30, default="+8801762364249",
                                         help_text="Full number with country code, no spaces. e.g. +8801812345678")
+    address = models.TextField(default="House 70, Road 11, Block D, Banani, Dhaka", blank=True)
+    working_hours = models.CharField(max_length=100, default="Sun-Thu : 9:00 AM - 8:00 PM", blank=True)
 
     # SEO
-    meta_title = models.CharField(max_length=200, default="Visa Slot Booking Services")
-    meta_description = models.TextField(default="Professional visa slot booking services for Medical, Tourist, and Double Entry visas", max_length=500)
+    meta_title = models.CharField(max_length=200, default="Nasir Travel & Consultancy | Visa & Travel Solutions")
+    meta_description = models.TextField(default="Fast, reliable, and hassle-free visa and travel support services across all countries with Nasir Travel & Consultancy.", max_length=500)
 
     # Footer
     footer_about_text = models.TextField(
-        default="We provide fast, reliable, and hassle-free visa slot booking services. Your trusted partner for all visa needs.",
+        default="We provide fast, reliable, and hassle-free visa, ticket, tour, and travel support services with trusted professional guidance.",
         max_length=500
     )
-    copyright_text = models.CharField(max_length=200, default="© 2026 SlotBooker. All Rights Reserved.")
+    copyright_text = models.CharField(max_length=200, default="© 2026 Nasir Travel & Consultancy. All Rights Reserved.")
 
     # Social links
     facebook_url = models.URLField(blank=True, default="")
@@ -116,6 +120,16 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=0)
     price_label = models.CharField(max_length=20, default="BDT", help_text="Currency label")
     description = models.TextField(max_length=300, blank=True)
+    slot_rates = models.TextField(
+        blank=True,
+        default="IVAC Dhaka (JFP): 4500 TK\nIVAC Khulna: 6000 TK",
+        help_text="One rate per line, example: IVAC Dhaka (JFP): 4500 TK"
+    )
+    available_centers = models.TextField(
+        blank=True,
+        default="IVAC Khulna\nIVAC CTG\nIVAC Dhaka (JFP)\nIVAC Rajshahi\nIVAC Sylhet",
+        help_text="One center per line"
+    )
     is_popular = models.BooleanField(default=False, help_text="Show 'Most Popular' badge")
     cta_text = models.CharField(max_length=50, default="Book Now")
     order = models.PositiveIntegerField(default=0)
