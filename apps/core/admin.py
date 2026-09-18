@@ -19,10 +19,10 @@ class ServiceFeatureInline(TabularInline):
 class SiteSettingsAdmin(ModelAdmin):
     fieldsets = (
         ("Branding", {
-            "fields": ("site_name", "site_tagline", "logo", "favicon"),
+            "fields": ("agency_name", "site_name", "site_tagline", "logo", "favicon"),
         }),
         ("Contact Information", {
-            "fields": ("phone", "email", "whatsapp_number"),
+            "fields": ("phone", "secondary_phone", "email", "whatsapp_number", "address", "working_hours"),
         }),
         ("SEO", {
             "fields": ("meta_title", "meta_description"),
@@ -84,6 +84,14 @@ class ServiceAdmin(ModelAdmin):
     list_editable = ("price", "order", "is_active", "is_popular")
     list_filter = ("is_active", "is_popular")
     search_fields = ("title",)
+    fieldsets = (
+        ("Main Details", {
+            "fields": ("title", "icon_class", "price", "price_label", "description", "cta_text", "is_popular", "order", "is_active")
+        }),
+        ("Rate Details", {
+            "fields": ("slot_rates", "available_centers")
+        }),
+    )
     inlines = [ServiceFeatureInline]
 
 

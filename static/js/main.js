@@ -119,6 +119,27 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ─── Visa solution filter tabs ─────────────────────────
+    const visaTabs = document.querySelectorAll('.visa-tab');
+    const visaCards = document.querySelectorAll('.visa-card-item');
+
+    const applyVisaFilter = function (filterValue) {
+        visaTabs.forEach(function (tab) {
+            tab.classList.toggle('active', tab.dataset.filter === filterValue);
+        });
+
+        visaCards.forEach(function (card) {
+            const matches = filterValue === 'all' || card.dataset.filterGroup === filterValue;
+            card.classList.toggle('hidden-card', !matches);
+        });
+    };
+
+    visaTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            applyVisaFilter(this.dataset.filter);
+        });
+    });
+
     // ─── Service Card Click → Set Visa Type in Form ─────────
     document.querySelectorAll('.btn-service-book').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
