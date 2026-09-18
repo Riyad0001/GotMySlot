@@ -136,42 +136,70 @@
     </div>
 </section>
 
-<!-- ═══════════════════ SERVICES SECTION ═══════════════════ -->
-<section class="services-section" id="services">
+<!-- ═══════════════════ COMPREHENSIVE VISA SOLUTIONS ═══════════════════ -->
+<section class="visa-solutions-section" id="services">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge"><i class="fas fa-concierge-bell"></i> Our Services</span>
-            <h2>Choose Your <span>Visa Service</span></h2>
-            <p>Select the visa type you need and book your slot instantly</p>
+            <span class="section-badge"><i class="fas fa-passport"></i> Visa Solutions</span>
+            <h2>Comprehensive <span>Visa Solutions</span></h2>
+            <p>Choose from our wide range of visa slot booking services for all IVAC centers.</p>
         </div>
-        <div class="row g-4 justify-content-center">
+
+        <div class="visa-solution-tabs" aria-label="Visa service filters">
+            <button type="button" class="visa-tab active" data-filter="all">All Services</button>
             {% for service in services %}
-            <div class="col-lg-4 col-md-6">
-                <div class="service-card {% if service.is_popular %}popular{% endif %}">
+            <button type="button" class="visa-tab" data-filter="{{ service.title|slugify }}">{{ service.title }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="row g-4 justify-content-center visa-grid">
+            {% for service in services %}
+            <div class="col-xl-4 col-lg-6 col-md-6 visa-card-item" data-filter-group="{{ service.title|slugify }}">
+                <div class="visa-solution-card {% if service.is_popular %}popular{% endif %}">
                     {% if service.is_popular %}
-                    <div class="popular-badge">
-                        <i class="fas fa-crown"></i> Most Popular
-                    </div>
+                    <span class="solution-popular">Most Popular</span>
                     {% endif %}
-                    <div class="service-icon">
+                    <div class="solution-icon">
                         <i class="{{ service.icon_class }}"></i>
                     </div>
                     <h3>{{ service.title }}</h3>
-                    <div class="service-price">
-                        <span class="currency">৳</span>
-                        <span class="amount">{{ service.price|floatformat:0 }}</span>
-                        <span class="label">{{ service.price_label }}</span>
-                    </div>
                     {% if service.description %}
-                    <p class="service-desc">{{ service.description }}</p>
+                    <p class="solution-desc">{{ service.description }}</p>
                     {% endif %}
-                    <ul class="service-features">
-                        {% for feature in service.features.all %}
-                        <li><i class="fas fa-check-circle"></i> {{ feature.text }}</li>
-                        {% endfor %}
-                    </ul>
-                    <a href="#contact" class="btn-service-book" data-service-id="{{ service.id }}" data-service-name="{{ service.title }}">
-                        <i class="fas fa-arrow-right"></i> {{ service.cta_text }}
+
+                    <div class="solution-rate-block">
+                        <h4><i class="fas fa-money-check-alt"></i> Slot Rates</h4>
+                        <ul>
+                            {% if service.slot_rates %}
+                                {% for rate in service.slot_rates.splitlines %}
+                                    {% if rate %}
+                                        <li><i class="fas fa-check"></i> {{ rate }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <li><i class="fas fa-check"></i> {{ service.price_label }} {{ service.price|floatformat:0 }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div class="solution-center-block">
+                        <h4><i class="fas fa-map-marker-alt"></i> Available Centers</h4>
+                        <ul>
+                            {% if service.available_centers %}
+                                {% for center in service.available_centers.splitlines %}
+                                    {% if center %}
+                                        <li><i class="fas fa-location-dot"></i> {{ center }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <li><i class="fas fa-location-dot"></i> IVAC Dhaka (JFP)</li>
+                                <li><i class="fas fa-location-dot"></i> IVAC Khulna</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <a href="#contact" class="btn-solution-book" data-service-id="{{ service.id }}" data-service-name="{{ service.title }}">
+                        <i class="fas fa-calendar-check"></i> {{ service.cta_text|default:"Book Now" }}
                     </a>
                 </div>
             </div>
@@ -207,19 +235,113 @@
 <!-- ═══════════════════ CONTACT / BOOKING FORM ═══════════════════ -->
 <section class="contact-section" id="contact">
     <div class="container">
-        <div class="row g-5 align-items-center">
+        <div class="section-header">
+            <span class="section-badge"><i class="fas fa-paper-plane"></i> Contact Us</span>
+            <h2>Get in <span>Touch</span></h2>
+            <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+        </div>
+
+        <div class="row g-5 align-items-start">
+            <div class="col-lg-7">
+                <div class="booking-form-card">
+                    <form id="bookingForm" method="POST" action="{% url 'website:submit_booking' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="full_name"><i class="fas fa-user"></i> Full Name *</label>
+                                    <input type="text" id="full_name" name="full_name" required placeholder="Enter your full name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="email"><i class="fas fa-envelope"></i> Email Address *</label>
+                                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="phone"><i class="fas fa-phone"></i> Phone Number *</label>
+                                    <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="visa_type"><i class="fas fa-passport"></i> Service Type</label>
+                                    <select id="visa_type" name="visa_type">
+                                        <option value="">Select Visa Type</option>
+                                        {% for service in services %}
+                                        <option value="{{ service.id }}">{{ service.title }} — {{ service.price_label }} {{ service.price|floatformat:0 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="preferred_center"><i class="fas fa-map-marker-alt"></i> Preferred Center</label>
+                                    <select id="preferred_center" name="preferred_center">
+                                        <option value="">Select Preferred Center</option>
+                                        <option>IVAC Khulna</option>
+                                        <option>IVAC CTG</option>
+                                        <option>IVAC Dhaka (JFP)</option>
+                                        <option>IVAC Rajshahi</option>
+                                        <option>IVAC Sylhet</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="passport_upload"><i class="fas fa-id-card"></i> Passport (Photo Page)</label>
+                                    <input type="file" id="passport_upload" name="passport_upload" accept=".jpg,.jpeg,.png,.pdf">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="address_proof"><i class="fas fa-file-alt"></i> Address Proof (NID or Utility Bill)</label>
+                                    <input type="file" id="address_proof" name="address_proof" accept=".jpg,.jpeg,.png,.pdf">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-custom">
+                                    <label for="picture_upload"><i class="fas fa-camera"></i> 2in x 2in Picture of Applicant</label>
+                                    <input type="file" id="picture_upload" name="picture_upload" accept=".jpg,.jpeg,.png">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating-custom">
+                                    <label for="message"><i class="fas fa-comment-dots"></i> Additional Message</label>
+                                    <textarea id="message" name="message" rows="4" placeholder="Write your additional message here..."></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="upload-note">
+                                    <strong>Document Upload:</strong> Kindly ensure that the document is as per specifications mentioned below.<br>
+                                    • All file Minimum Size 10KB and Maximum 500 KB<br>
+                                    • Passport Upload - Photo page of Passport containing personal details like name, date of birth, nationality, expiry date etc. to be uploaded by the applicant.
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-submit" id="submitBtn">
+                                    <i class="fas fa-paper-plane"></i> Submit Application
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="formMessage" class="form-message" style="display:none;"></div>
+                </div>
+            </div>
+
             <div class="col-lg-5">
-                <div class="contact-info-block">
-                    <span class="section-badge"><i class="fas fa-paper-plane"></i> Get In Touch</span>
-                    <h2>Book Your <span>Visa Slot</span> Today</h2>
-                    <p>Fill out the form and our team will get back to you within 30 minutes during business hours.</p>
-                    <div class="contact-details">
+                <div class="contact-sidebar">
+                    <div class="contact-box">
+                        <h3>Contact Information</h3>
                         {% if site_settings.phone %}
                         <div class="contact-item">
                             <div class="contact-item-icon"><i class="fas fa-phone-alt"></i></div>
                             <div>
-                                <h5>Call Us</h5>
+                                <h5>Phone</h5>
                                 <p><a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></p>
+                                <a class="mini-link" href="tel:{{ site_settings.phone }}">Call Now</a>
                             </div>
                         </div>
                         {% endif %}
@@ -227,72 +349,42 @@
                         <div class="contact-item">
                             <div class="contact-item-icon"><i class="fas fa-envelope"></i></div>
                             <div>
-                                <h5>Email Us</h5>
+                                <h5>Email</h5>
                                 <p><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
+                                <a class="mini-link" href="mailto:{{ site_settings.email }}">Send Email</a>
                             </div>
                         </div>
                         {% endif %}
-                        {% if site_settings.whatsapp_number %}
+                        {% if site_settings.working_hours %}
                         <div class="contact-item">
-                            <div class="contact-item-icon"><i class="fab fa-whatsapp"></i></div>
+                            <div class="contact-item-icon"><i class="fas fa-clock"></i></div>
                             <div>
-                                <h5>WhatsApp</h5>
-                                <p><a href="https://wa.me/{{ site_settings.whatsapp_number }}" target="_blank">Chat Now</a></p>
+                                <h5>Working Hours</h5>
+                                <p>{{ site_settings.working_hours }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if site_settings.address %}
+                        <div class="contact-item">
+                            <div class="contact-item-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div>
+                                <h5>IVAC Centers</h5>
+                                <p>Khulna | CTG | Dhaka (JFP) | Rajshahi</p>
                             </div>
                         </div>
                         {% endif %}
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-7">
-                <div class="booking-form-card">
-                    <h3><i class="fas fa-calendar-plus"></i> Booking Form</h3>
-                    <form id="bookingForm" method="POST" action="{% url 'website:submit_booking' %}">
-                        {% csrf_token %}
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    <label for="full_name"><i class="fas fa-user"></i> Full Name</label>
-                                    <input type="text" id="full_name" name="full_name" required placeholder="Enter your full name">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
-                                    <input type="email" id="email" name="email" required placeholder="Enter your email">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" required placeholder="Enter your phone number">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating-custom">
-                                    <label for="visa_type"><i class="fas fa-passport"></i> Visa Type</label>
-                                    <select id="visa_type" name="visa_type">
-                                        <option value="">Select Visa Type</option>
-                                        {% for service in services %}
-                                        <option value="{{ service.id }}">{{ service.title }} — ৳{{ service.price|floatformat:0 }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating-custom">
-                                    <label for="message"><i class="fas fa-comment-dots"></i> Message (Optional)</label>
-                                    <textarea id="message" name="message" rows="4" placeholder="Tell us about your requirements..."></textarea>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button type="submit" class="btn-submit" id="submitBtn">
-                                    <i class="fas fa-paper-plane"></i> Submit Booking Request
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <div id="formMessage" class="form-message" style="display:none;"></div>
+
+                    <div class="contact-brand-box">
+                        <h4>{{ site_settings.agency_name|default:'Nasir Travel & Consultancy' }}</h4>
+                        <p>{{ site_settings.site_tagline|default:'Your Journey | Our Priority' }}</p>
+                        {% if site_settings.facebook_url %}
+                        <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                        {% endif %}
+                        {% if site_settings.instagram_url %}
+                        <a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
